@@ -1,0 +1,16 @@
+type:
+  name: cat
+  requirements:
+    - name: cat home
+      type: ICatHome
+      unit: CatHome
+    - name: vet
+      type: TVet
+      unit: Occupations
+  variables:
+    - name: id
+      type: integer
+    - name: name
+      type: string
+    - name: age
+      type: integer
