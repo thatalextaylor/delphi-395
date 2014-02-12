@@ -7,7 +7,7 @@ from uuid import uuid4
 def get_config():
     parser = argparse.ArgumentParser(description='Construct Delphi classes from a YAML template.')
     parser.add_argument('source_files', metavar='SOURCE', type=file, nargs='+',
-                        help='an integer for the accumulator')
+                        help='A YAML template file from which Delphi source will be generated')
     return parser.parse_args()
 
 
