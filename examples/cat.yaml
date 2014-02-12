@@ -7,6 +7,12 @@ type:
     - name: vet
       type: TVet
       unit: Occupations
+  enumerations:
+    - name: TVariety
+      values:
+        - Tabby
+        - Burmese
+        - Ginger
   variables:
     - name: id
       type: integer
@@ -14,3 +20,5 @@ type:
       type: string
     - name: age
       type: integer
+    - name: variety
+      type: TVariety

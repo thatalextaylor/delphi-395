@@ -10,6 +10,14 @@ uses
 
 {% endif %}
 type
+{% if enumerations %}
+  {$SCOPEDENUMS ON}
+  {% for enumeration in enumerations %}
+  {{ enumeration.name }} = ({{ enumeration['values']|join(', ') }});
+  {% endfor %}
+  {$SCOPEDENUMS OFF}
+
+{% endif %}
   I{{ name_titlecase }} = interface
   ['{{ "{" + uuid + "}" }}']
   {% for variable in variables %}
