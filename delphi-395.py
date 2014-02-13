@@ -50,6 +50,7 @@ def expand_templates(config, env, source_file):
     augment_data(data)
     for template_file_name in os.listdir('templates'):
         if template_file_name[-4:] == '.pas':
+            augment_uuids(data)
             expand_template(config, env.get_template(template_file_name), template_file_name, data['type'])
 
 
