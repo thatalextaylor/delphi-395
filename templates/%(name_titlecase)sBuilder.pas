@@ -65,7 +65,7 @@ end;
 
 {% for variable in variables %}
 //----------------------------------------------------------------------------------------------------------------------
-procedure T{{ name_titlecase }}.With{{ variable.name_titlecase }}(const A{{ variable.name_titlecase }} : {{ variable.type }}): I{{ name_titlecase }}Builder;
+function T{{ name_titlecase }}.With{{ variable.name_titlecase }}(const A{{ variable.name_titlecase }} : {{ variable.type }}): I{{ name_titlecase }}Builder;
 begin
   F{{ variable.name_titlecase }} := A{{ variable.name_titlecase }};
   Result := Self;
