@@ -1,4 +1,4 @@
-import argparse, os
+import argparse, os, re
 from jinja2 import Environment, PackageLoader
 from yaml import load, dump, Loader
 from uuid import uuid4
@@ -11,9 +11,13 @@ def get_config():
     return parser.parse_args()
 
 
+def split_on_space_and_upper(target):
+    return re.sub(r"([A-Z])", r" \1", target['name']).split()
+
+
 def augment_name(target):
     if 'name' in target:
-        split_name = target['name'].split()
+        split_name = split_on_space_and_upper(target)
         target['name_camelcase'] = split_name[0] + ''.join(x.title() for x in split_name[1:])
         target['name_titlecase'] = ''.join(x.title() for x in split_name)
         target['name_snakecase'] = '_'.join(x.lower() for x in split_name)
@@ -59,6 +63,7 @@ def main():
     env = Environment(lstrip_blocks=True, trim_blocks=True, loader=PackageLoader('delphi-395', 'templates'))
     for source_file in config.source_files:
         expand_templates(config, env, source_file)
+
 
 if __name__ == "__main__":
     main()
