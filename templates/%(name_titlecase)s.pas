@@ -46,7 +46,7 @@ type
     class var FNull : I{{ name_titlecase }};
 
   public
-    constructor Create({% if requirements %}{% for requirement in requirements[:-1] %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}; {% endfor %}const A{{ requirements[-1].name_titlecase }} : {{ requirements[-1].type }}{% endif %}); reintroduce;
+    constructor Create({% for requirement in requirements if requirement.name and requirement.type %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}{% if not loop.last %}; {% endif %}{% endfor %}); reintroduce;
     class constructor CreateClass;
     class function Null : I{{ name_titlecase }};
 
@@ -73,7 +73,7 @@ type
 { T{{ name_titlecase }} }
 
 //----------------------------------------------------------------------------------------------------------------------
-constructor T{{ name_titlecase }}.Create({% if requirements %}{% for requirement in requirements[:-1] %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}; {% endfor %}const A{{ requirements[-1].name_titlecase }} : {{ requirements[-1].type }}{% endif %});
+constructor T{{ name_titlecase }}.Create({% for requirement in requirements if requirement.name and requirement.type %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}{% if not loop.last %}; {% endif %}{% endfor %});
 begin
 {% if requirements %}
 {% for requirement in requirements %}

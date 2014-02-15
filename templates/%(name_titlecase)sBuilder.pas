@@ -32,9 +32,9 @@ type
     F{{ variable.name_titlecase }}: {{ variable.type }};
   {% endfor %}
   public
-    constructor Create({% if requirements %}{% for requirement in requirements[:-1] %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}; {% endfor %}const A{{ requirements[-1].name_titlecase }} : {{ requirements[-1].type }}{% endif %});
+    constructor Create({% for requirement in requirements if requirement.name and requirement.type %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}{% if not loop.last %}; {% endif %}{% endfor %}); reintroduce;
 
-    class function New({% if requirements %}{% for requirement in requirements[:-1] %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}; {% endfor %}const A{{ requirements[-1].name_titlecase }} : {{ requirements[-1].type }}{% endif %}) : I{{ name_titlecase }}Builder;
+    class function New({% for requirement in requirements if requirement.name and requirement.type %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}{% if not loop.last %}; {% endif %}{% endfor %}) : I{{ name_titlecase }}Builder;
 
   {% for variable in variables %}
     function With{{ variable.name_titlecase }}(const A{{ variable.name_titlecase }} : {{ variable.type }}) : I{{ name_titlecase }}Builder;
@@ -48,7 +48,7 @@ implementation
 { T{{ name_titlecase }}Builder }
 
 //----------------------------------------------------------------------------------------------------------------------
-constructor T{{ name_titlecase }}Builder.Create({% if requirements %}{% for requirement in requirements[:-1] %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}; {% endfor %}const A{{ requirements[-1].name_titlecase }} : {{ requirements[-1].type }}{% endif %});
+constructor T{{ name_titlecase }}Builder.Create({% for requirement in requirements if requirement.name and requirement.type %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}{% if not loop.last %}; {% endif %}{% endfor %});
 begin
 {% if requirements %}
 {% for requirement in requirements %}
@@ -58,7 +58,7 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-class function T{{ name_titlecase }}Builder.New({% if requirements %}{% for requirement in requirements[:-1] %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}; {% endfor %}const A{{ requirements[-1].name_titlecase }} : {{ requirements[-1].type }}{% endif %}): I{{ name_titlecase }}Builder;
+class function T{{ name_titlecase }}Builder.New({% for requirement in requirements if requirement.name and requirement.type %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}{% if not loop.last %}; {% endif %}{% endfor %}): I{{ name_titlecase }}Builder;
 begin
   Result := T{{ name_titlecase }}Builder.Create({% if requirements %}{% for requirement in requirements[:-1] %}A{{ requirement.name_titlecase }}, {% endfor %}A{{ requirements[-1].name_titlecase }}{% endif %});
 end;

@@ -7,6 +7,7 @@ type:
     - name: vet
       type: TVet
       unit: Occupations
+    - unit: ARequiredUnit
   enumerations:
     - name: TVariety
       values:
