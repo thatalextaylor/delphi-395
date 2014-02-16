@@ -11,13 +11,13 @@ def get_config():
     return parser.parse_args()
 
 
-def split_on_space_and_upper(target):
-    return re.sub(r"([A-Z])", r" \1", target['name']).split()
+def split_on_space_underscore_and_upper(name):
+    return ((re.sub(r"([A-Z])", r" \1", name)).replace('_', ' ')).split()
 
 
 def augment_name(target):
     if 'name' in target:
-        split_name = split_on_space_and_upper(target)
+        split_name = split_on_space_underscore_and_upper(target['name'])
         target['name_camelcase'] = split_name[0] + ''.join(x.title() for x in split_name[1:])
         target['name_titlecase'] = ''.join(x.title() for x in split_name)
         target['name_snakecase'] = '_'.join(x.lower() for x in split_name)
