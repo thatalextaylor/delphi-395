@@ -4,9 +4,9 @@ unit {{ name_titlecase }};
 
 interface
 
-{% if requirements %}
+{% if uses %}
 uses
-  {{ requirements|join(',\n  ', attribute='unit') }};
+  {{ uses|join(',\n  ') }};
 
 {% endif %}
 type
@@ -37,8 +37,8 @@ type
   {% for requirement in requirements %}
     F{{ requirement.name_titlecase }}: {{ requirement.type }};
   {% endfor %}
-  {% endif %}
 
+  {% endif %}
   {% for variable in variables %}
     F{{ variable.name_titlecase }}: {{ variable.type }};
   {% endfor %}
@@ -72,7 +72,6 @@ type
 
 { T{{ name_titlecase }} }
 
-//----------------------------------------------------------------------------------------------------------------------
 constructor T{{ name_titlecase }}.Create({% for requirement in requirements if requirement.name and requirement.type %}const A{{ requirement.name_titlecase }} : {{ requirement.type }}{% if not loop.last %}; {% endif %}{% endfor %});
 begin
 {% if requirements %}
@@ -82,57 +81,46 @@ begin
 {% endif %}
 end;
 
-//----------------------------------------------------------------------------------------------------------------------
 class constructor T{{ name_titlecase }}.CreateClass;
 begin
   FNull := TNull{{ name_titlecase }}.Create();
 end;
 
-//----------------------------------------------------------------------------------------------------------------------
 class function T{{ name_titlecase }}.Null: I{{ name_titlecase }};
 begin
   Result := FNull;
 end;
 
 {% for variable in variables %}
-//----------------------------------------------------------------------------------------------------------------------
 function T{{ name_titlecase }}.Get{{ variable.name_titlecase }}: {{ variable.type }};
 begin
   Result := F{{ variable.name_titlecase }};
 end;
 
 {% endfor %}
-//----------------------------------------------------------------------------------------------------------------------
 function T{{ name_titlecase }}.IsNull: Boolean;
 begin
   Result := False;
 end;
 
 {% for variable in variables %}
-//----------------------------------------------------------------------------------------------------------------------
 procedure T{{ name_titlecase }}.Set{{ variable.name_titlecase }}(const A{{ variable.name_titlecase }} : {{ variable.type }});
 begin
   F{{ variable.name_titlecase }} := A{{ variable.name_titlecase }};
 end;
 
 {% endfor %}
-//----------------------------------------------------------------------------------------------------------------------
 { TNull{{ name_titlecase }} }
 
-//----------------------------------------------------------------------------------------------------------------------
 constructor TNull{{ name_titlecase }}.Create;
 begin
   //Should set everything to a 'safe' default
 end;
 
-//----------------------------------------------------------------------------------------------------------------------
 function TNull{{ name_titlecase }}.IsNull: Boolean;
 begin
   Result := True;
 end;
 
-//----------------------------------------------------------------------------------------------------------------------
 end.
-//----------------------------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------------------------
 

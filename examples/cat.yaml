@@ -1,13 +1,14 @@
 type:
   name: cat
+  uses:
+    - CatHome
+    - Occupations
+    - ARequiredUnit
   requirements:
     - name: cat home
       type: ICatHome
-      unit: CatHome
     - name: vet
       type: TVet
-      unit: Occupations
-    - unit: ARequiredUnit
   enumerations:
     - name: TVariety
       values:

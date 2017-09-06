@@ -1,12 +1,15 @@
-import argparse, os, re
-from jinja2 import Environment, PackageLoader
-from yaml import load, dump, Loader
+import argparse
+import os
+import re
 from uuid import uuid4
+
+from jinja2 import Environment, PackageLoader
+from yaml import load, Loader
 
 
 def get_config():
     parser = argparse.ArgumentParser(description='Construct Delphi classes from a YAML template.')
-    parser.add_argument('source_files', metavar='SOURCE', type=file, nargs='+',
+    parser.add_argument('source_files', metavar='SOURCE', type=argparse.FileType('r'), nargs='+',
                         help='A YAML template file from which Delphi source will be generated')
     return parser.parse_args()
 
@@ -24,12 +27,12 @@ def augment_name(target):
 
 
 def augment_names(data):
-    if 'name' in data['type']:
+    if 'name' in data['type'] and data['type']['name'] is not None:
         augment_name(data['type'])
-    if 'requirements' in data['type']:
+    if 'requirements' in data['type'] and data['type']['requirements'] is not None:
         for requirement in data['type']['requirements']:
             augment_name(requirement)
-    if 'variables' in data['type']:
+    if 'variables' in data['type'] and data['type']['variables'] is not None:
         for variable in data['type']['variables']:
             augment_name(variable)
 
@@ -45,7 +48,7 @@ def augment_data(data):
 
 
 def expand_template(config, template, template_file_name, type_data):
-    with open(template_file_name % type_data, 'wb') as dest_file:
+    with open(template_file_name % type_data, 'w') as dest_file:
         dest_file.write(template.render(type_data))
 
 
