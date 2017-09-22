@@ -41,16 +41,21 @@ def augment_uuids(data):
     data['type']['uuid'] = str(uuid4()).upper()
 
 
-def split_method_header(method):
-    match = re.match(r"(function\s+|procedure\s+)(\w+\.)(.*)", method)
+def create_method_definition(method, class_title):
+    first, rest = method.split('\n', 1)
+    match = re.match(r"(function\s+|procedure\s+)(.*)", first)
     return {
-        'definition': match.group(1)+match.group(3),
-        'body': method
+        'definition': first,
+        'body': "{0}T{1}.{2}\n{3}".format(match.group(1), class_title, match.group(2), rest)
     }
 
 
 def augment_methods(data):
-    data['type']['methods'] = [split_method_header(method) for method in data['type']['methods']]
+    data['type']['methods'] = [create_method_definition(method, data['type']['name_titlecase']) for method in data['type']['methods']
+                               if 'name_titlecase' in data['type'] and
+                               data['type']['name_titlecase'] is not None and
+                               'methods' in data['type'] and
+                               data['type']['methods'] is not None]
 
 
 def augment_data(data):
