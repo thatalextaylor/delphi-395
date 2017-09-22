@@ -25,6 +25,12 @@ type
   {% endfor %}
 
     function IsNull : Boolean;
+  {% if methods %}
+
+  {% for method in methods %}
+    {{ method.definition }}
+  {% endfor %}
+  {% endif %}
 
   {% for variable in variables %}
     property {{ variable.name_titlecase }}: {{ variable.type }} read Get{{ variable.name_titlecase }};
@@ -59,6 +65,12 @@ type
   {% for variable in variables %}
     procedure Set{{ variable.name_titlecase }}(const A{{ variable.name_titlecase }} : {{ variable.type }});
   {% endfor %}
+  {% if methods %}
+
+  {% for method in methods %}
+    {{ method.definition }}
+  {% endfor %}
+  {% endif %}
   end;
 
 implementation
@@ -109,6 +121,9 @@ begin
   F{{ variable.name_titlecase }} := A{{ variable.name_titlecase }};
 end;
 
+{% endfor %}
+{% for method in methods %}
+{{ method.body }}
 {% endfor %}
 { TNull{{ name_titlecase }} }
 

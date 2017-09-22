@@ -41,10 +41,23 @@ def augment_uuids(data):
     data['type']['uuid'] = str(uuid4()).upper()
 
 
+def split_method_header(method):
+    match = re.match(r"(function\s+|procedure\s+)(\w+\.)(.*)", method)
+    return {
+        'definition': match.group(1)+match.group(3),
+        'body': method
+    }
+
+
+def augment_methods(data):
+    data['type']['methods'] = [split_method_header(method) for method in data['type']['methods']]
+
+
 def augment_data(data):
     if 'type' in data:
         augment_uuids(data)
         augment_names(data)
+        augment_methods(data)
 
 
 def expand_template(config, template, template_file_name, type_data):
