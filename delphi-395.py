@@ -51,11 +51,12 @@ def create_method_definition(method, class_title):
 
 
 def augment_methods(data):
-    data['type']['methods'] = [create_method_definition(method, data['type']['name_titlecase']) for method in data['type']['methods']
-                               if 'name_titlecase' in data['type'] and
-                               data['type']['name_titlecase'] is not None and
-                               'methods' in data['type'] and
-                               data['type']['methods'] is not None]
+    if 'methods' in data['type'] and data['type']['methods'] is not None:
+        data['type']['methods'] = [create_method_definition(method, data['type']['name_titlecase']) for method in data['type']['methods']
+                                   if 'name_titlecase' in data['type'] and
+                                   data['type']['name_titlecase'] is not None and
+                                   'methods' in data['type'] and
+                                   data['type']['methods'] is not None]
 
 
 def augment_data(data):
