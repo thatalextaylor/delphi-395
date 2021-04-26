@@ -1,5 +1,6 @@
 import argparse
 import os
+import os.path
 import re
 from uuid import uuid4
 
@@ -11,6 +12,8 @@ def get_config():
     parser = argparse.ArgumentParser(description='Construct Delphi classes from a YAML template.')
     parser.add_argument('source_files', metavar='SOURCE', type=argparse.FileType('r'), nargs='+',
                         help='A YAML template file from which Delphi source will be generated')
+    parser.add_argument('--null', action='store_true',
+                        help='Include a `null` version of the type')
     return parser.parse_args()
 
 
@@ -37,8 +40,18 @@ def augment_names(data):
             augment_name(variable)
 
 
+def augment_types(data):
+    if 'variables' in data['type'] and data['type']['variables'] is not None:
+        for variable in data['type']['variables']:
+            try:
+                variable['contained_generic_type'] = variable['type'][variable['type'].index('<') + 1:variable['type'].rindex('>')]
+            except ValueError:
+                variable['contained_generic_type'] = None
+
+
 def augment_uuids(data):
-    data['type']['uuid'] = str(uuid4()).upper()
+    if 'uuid' not in data['type']:
+        data['type']['uuid'] = str(uuid4()).upper()
 
 
 def create_method_definition(method, class_title):
@@ -63,6 +76,7 @@ def augment_data(data):
     if 'type' in data:
         augment_uuids(data)
         augment_names(data)
+        augment_types(data)
         augment_methods(data)
 
 
@@ -76,8 +90,16 @@ def expand_templates(config, env, source_file):
     augment_data(data)
     for template_file_name in os.listdir('templates'):
         if template_file_name[-4:] == '.pas':
+            if os.path.exists(template_file_name % data['type']):
+                with open(template_file_name % data['type'], 'r') as dst_file:
+                    content = dst_file.read()
+                    uuid_match = re.search(r"\['\{(\S+)\}'\]", content)
+                    if uuid_match:
+                        data['type']['uuid'] = uuid_match.group(1)
             augment_uuids(data)
+            data['type']['include_null'] = config.null
             expand_template(config, env.get_template(template_file_name), template_file_name, data['type'])
+            del data['type']['uuid']
 
 
 def main():
